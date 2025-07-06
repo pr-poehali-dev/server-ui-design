@@ -9,16 +9,15 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import Icon from "@/components/ui/icon";
 
 const Index = () => {
   const [terminalInput, setTerminalInput] = useState("");
   const [terminalHistory, setTerminalHistory] = useState([
+    "$ docker ps",
     "$ systemctl status nginx",
-    "● nginx.service - A high performance web server",
-    "   Active: active (running) since Mon 2024-01-15 10:30:12 UTC",
+    "$ tail -f /var/log/syslog",
     "$ ",
   ]);
 
@@ -35,320 +34,255 @@ const Index = () => {
     }
   };
 
-  const serverStats = [
-    { name: "CPU Usage", value: 68, color: "bg-green-500" },
-    { name: "Memory", value: 45, color: "bg-blue-500" },
-    { name: "Disk Space", value: 73, color: "bg-yellow-500" },
-    { name: "Network", value: 32, color: "bg-purple-500" },
+  const menuItems = [
+    { name: "Docker", icon: "Container", active: false },
+    { name: "SSL", icon: "Shield", active: false },
+    { name: "n8n", icon: "GitBranch", active: false },
+    { name: "NGINX", icon: "Globe", active: true },
+    { name: "PostgreSQL", icon: "Database", active: false },
+    { name: "Redis", icon: "Zap", active: false },
+    { name: "Monitoring", icon: "Activity", active: false },
+    { name: "Firewall", icon: "Shield", active: false },
+    { name: "Backups", icon: "Archive", active: false },
+    { name: "CI/CD", icon: "GitBranch", active: false },
+    { name: "Copilot", icon: "Bot", active: false },
+    { name: "ChatOps", icon: "MessageSquare", active: false },
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
-      {/* Header */}
-      <header className="border-b border-gray-700 bg-gray-900/50 backdrop-blur-sm">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
-                <Icon name="Server" size={18} className="text-white" />
-              </div>
-              <h1 className="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                ServerPanel
-              </h1>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Badge
-                variant="outline"
-                className="border-green-500 text-green-400"
-              >
-                <Icon name="Circle" size={8} className="mr-1 fill-current" />
-                Online
-              </Badge>
-              <Button variant="outline" size="sm">
-                <Icon name="Settings" size={16} className="mr-1" />
-                Settings
-              </Button>
-            </div>
+    <div className="min-h-screen bg-[#2D2D30] text-white flex">
+      {/* Left Sidebar */}
+      <div className="w-64 bg-[#252526] border-r border-gray-700 flex flex-col">
+        {/* Logo */}
+        <div className="p-4 border-b border-gray-700">
+          <div className="flex items-center space-x-2">
+            <Icon name="Zap" size={20} className="text-purple-400" />
+            <h1 className="text-lg font-bold text-white">VarPilot</h1>
           </div>
         </div>
-      </header>
 
-      <div className="container mx-auto px-6 py-8">
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {[
-            {
-              label: "Active Servers",
-              value: "12",
-              icon: "Server",
-              color: "from-blue-500 to-blue-600",
-            },
-            {
-              label: "Total Projects",
-              value: "24",
-              icon: "Folder",
-              color: "from-green-500 to-green-600",
-            },
-            {
-              label: "Uptime",
-              value: "99.9%",
-              icon: "Activity",
-              color: "from-purple-500 to-purple-600",
-            },
-            {
-              label: "Alerts",
-              value: "3",
-              icon: "AlertTriangle",
-              color: "from-orange-500 to-orange-600",
-            },
-          ].map((stat, index) => (
-            <Card
+        {/* Search */}
+        <div className="p-4">
+          <div className="relative">
+            <Icon
+              name="Search"
+              size={16}
+              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+            />
+            <Input
+              placeholder="Поиск..."
+              className="bg-[#1E1E1E] border-gray-600 pl-10 text-white placeholder-gray-400"
+            />
+          </div>
+        </div>
+
+        {/* Menu Items */}
+        <div className="flex-1 px-2">
+          {menuItems.map((item, index) => (
+            <button
               key={index}
-              className="bg-gray-800/50 border-gray-700 hover:bg-gray-800/70 transition-all duration-300"
+              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg mb-1 transition-all duration-200 ${
+                item.active
+                  ? "bg-[#37373D] text-white"
+                  : "text-gray-400 hover:bg-[#37373D] hover:text-white"
+              }`}
             >
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-400">
-                      {stat.label}
-                    </p>
-                    <p className="text-2xl font-bold text-white mt-1">
-                      {stat.value}
-                    </p>
-                  </div>
-                  <div
-                    className={`p-3 rounded-full bg-gradient-to-r ${stat.color}`}
-                  >
-                    <Icon name={stat.icon} size={20} className="text-white" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+              <Icon name={item.icon} size={16} />
+              <span className="text-sm">{item.name}</span>
+            </button>
           ))}
         </div>
 
-        {/* Main Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column - Server Monitoring */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Server Status */}
-            <Card className="bg-gray-800/50 border-gray-700">
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Icon name="MonitorSpeaker" size={20} className="mr-2" />
-                  Server Monitoring
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {serverStats.map((stat, index) => (
-                    <div key={index} className="space-y-2">
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-400">{stat.name}</span>
-                        <span className="text-white font-medium">
-                          {stat.value}%
-                        </span>
-                      </div>
-                      <Progress value={stat.value} className="h-2" />
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+        {/* Registration Button */}
+        <div className="p-4 border-t border-gray-700">
+          <Button className="w-full bg-pink-600 hover:bg-pink-700 text-white">
+            Регистрация
+          </Button>
+        </div>
+      </div>
 
-            {/* Projects */}
-            <Card className="bg-gray-800/50 border-gray-700">
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Icon name="FolderOpen" size={20} className="mr-2" />
-                  Active Projects
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {[
-                    {
-                      name: "E-commerce API",
-                      status: "Running",
-                      uptime: "15d 4h",
-                      cpu: "12%",
-                    },
-                    {
-                      name: "Analytics Dashboard",
-                      status: "Running",
-                      uptime: "8d 12h",
-                      cpu: "8%",
-                    },
-                    {
-                      name: "Mobile Backend",
-                      status: "Stopped",
-                      uptime: "0h",
-                      cpu: "0%",
-                    },
-                  ].map((project, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between p-4 bg-gray-700/30 rounded-lg"
-                    >
-                      <div className="flex items-center space-x-3">
-                        <div
-                          className={`w-2 h-2 rounded-full ${
-                            project.status === "Running"
-                              ? "bg-green-500"
-                              : "bg-red-500"
-                          }`}
-                        />
-                        <div>
-                          <p className="font-medium text-white">
-                            {project.name}
-                          </p>
-                          <p className="text-sm text-gray-400">
-                            Uptime: {project.uptime}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <Badge
-                          variant={
-                            project.status === "Running"
-                              ? "default"
-                              : "destructive"
-                          }
-                        >
-                          {project.status}
-                        </Badge>
-                        <p className="text-sm text-gray-400 mt-1">
-                          CPU: {project.cpu}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Right Column - Terminal & Tools */}
-          <div className="space-y-6">
-            {/* Terminal */}
-            <Card className="bg-gray-900/70 border-gray-700">
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Icon name="Terminal" size={20} className="mr-2" />
-                  Terminal
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="bg-black/60 rounded-lg p-4 font-mono text-sm">
-                  <div className="h-48 overflow-y-auto space-y-1">
-                    {terminalHistory.map((line, index) => (
-                      <div
-                        key={index}
-                        className={
-                          line.startsWith("$")
-                            ? "text-green-400"
-                            : "text-gray-300"
-                        }
-                      >
-                        {line}
-                      </div>
-                    ))}
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col">
+        {/* Top Cards */}
+        <div className="p-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Server Load Card */}
+            <Card className="bg-[#1E1E1E] border-gray-600">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <Icon name="Server" size={16} className="text-gray-400" />
+                    <span className="text-sm text-gray-400">
+                      Загрузка сервера
+                    </span>
                   </div>
-                  <form onSubmit={handleTerminalCommand} className="mt-4">
-                    <div className="flex items-center space-x-2">
-                      <span className="text-green-400">$</span>
-                      <Input
-                        value={terminalInput}
-                        onChange={(e) => setTerminalInput(e.target.value)}
-                        className="bg-transparent border-none focus:ring-0 text-white font-mono"
-                        placeholder="Enter command..."
-                      />
-                    </div>
-                  </form>
                 </div>
-              </CardContent>
-            </Card>
-
-            {/* Quick Actions */}
-            <Card className="bg-gray-800/50 border-gray-700">
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Icon name="Zap" size={20} className="mr-2" />
-                  Quick Actions
-                </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  {[
-                    {
-                      label: "Deploy Project",
-                      icon: "Rocket",
-                      variant: "default",
-                    },
-                    {
-                      label: "Restart Services",
-                      icon: "RefreshCw",
-                      variant: "outline",
-                    },
-                    {
-                      label: "View Logs",
-                      icon: "FileText",
-                      variant: "outline",
-                    },
-                    {
-                      label: "Backup Data",
-                      icon: "Download",
-                      variant: "outline",
-                    },
-                  ].map((action, index) => (
-                    <Button
-                      key={index}
-                      variant={action.variant}
-                      className="w-full justify-start"
-                    >
-                      <Icon name={action.icon} size={16} className="mr-2" />
-                      {action.label}
-                    </Button>
-                  ))}
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-400">CPU: 34%</span>
+                    <span className="text-gray-400">RAM: 56%</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-400">Диск:</span>
+                  </div>
+                  <p className="text-xs text-gray-500">
+                    Время подключения к API
+                  </p>
                 </div>
               </CardContent>
             </Card>
 
-            {/* System Info */}
-            <Card className="bg-gray-800/50 border-gray-700">
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Icon name="Info" size={20} className="mr-2" />
-                  System Info
-                </CardTitle>
+            {/* Pilot Active Card */}
+            <Card className="bg-gradient-to-r from-purple-600 to-purple-700 border-purple-500">
+              <CardHeader className="pb-3">
+                <div className="flex items-center space-x-2">
+                  <Icon name="Zap" size={16} className="text-white" />
+                  <span className="text-sm text-white">Пилот активен</span>
+                </div>
               </CardHeader>
               <CardContent>
-                <div className="space-y-3 text-sm">
+                <p className="text-white text-sm">Служу за системой.</p>
+              </CardContent>
+            </Card>
+
+            {/* Keys and Passwords Card */}
+            <Card className="bg-[#1E1E1E] border-gray-600">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <Icon name="Key" size={16} className="text-yellow-400" />
+                    <span className="text-sm text-gray-400">
+                      Ключи и пароли
+                    </span>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2 text-xs">
                   <div className="flex justify-between">
-                    <span className="text-gray-400">OS</span>
-                    <span className="text-white">Ubuntu 22.04 LTS</span>
+                    <span className="text-gray-400">API_KEY:</span>
+                    <span className="text-white font-mono">••••••••</span>
+                    <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
+                      <span className="text-purple-400">Копировать</span>
+                    </Button>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-400">Kernel</span>
-                    <span className="text-white">5.15.0-91</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Load Average</span>
-                    <span className="text-white">0.68, 0.45, 0.32</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Docker</span>
-                    <Badge
-                      variant="outline"
-                      className="text-blue-400 border-blue-400"
-                    >
-                      v24.0.7
-                    </Badge>
+                    <span className="text-gray-400">SSH_KEY:</span>
+                    <span className="text-white font-mono">••••••••</span>
+                    <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
+                      <span className="text-purple-400">Скачать</span>
+                    </Button>
                   </div>
                 </div>
               </CardContent>
             </Card>
           </div>
+        </div>
+
+        {/* Bottom Section */}
+        <div className="flex-1 p-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Terminal Console */}
+          <Card className="bg-[#0D1117] border-gray-600">
+            <CardHeader>
+              <CardTitle className="flex items-center text-white">
+                <Icon name="Terminal" size={16} className="mr-2" />
+                Консоль - (отключенная)
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="bg-black/80 rounded-lg p-4 font-mono text-sm h-64">
+                <div className="space-y-1">
+                  {terminalHistory.map((line, index) => (
+                    <div
+                      key={index}
+                      className={
+                        line.startsWith("$")
+                          ? "text-green-400"
+                          : "text-gray-300"
+                      }
+                    >
+                      {line}
+                    </div>
+                  ))}
+                </div>
+                <form onSubmit={handleTerminalCommand} className="mt-4">
+                  <div className="flex items-center space-x-2">
+                    <span className="text-green-400">$</span>
+                    <Input
+                      value={terminalInput}
+                      onChange={(e) => setTerminalInput(e.target.value)}
+                      className="bg-transparent border-none focus:ring-0 text-white font-mono text-sm"
+                      placeholder="docker ps"
+                    />
+                  </div>
+                </form>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* AI Assistant */}
+          <Card className="bg-[#1E1E1E] border-gray-600">
+            <CardHeader>
+              <CardTitle className="flex items-center text-white">
+                <Icon name="Bot" size={16} className="mr-2" />
+                ИИ Ассистент
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="bg-[#2D2D30] rounded-lg p-4">
+                  <p className="text-sm text-gray-300 mb-2">
+                    Пилот: Обнаружена проблема в nginx.conf
+                  </p>
+                  <Badge
+                    variant="outline"
+                    className="text-xs text-purple-400 border-purple-400"
+                  >
+                    Готов помочь
+                  </Badge>
+                </div>
+
+                <div className="bg-[#2D2D30] rounded-lg p-4">
+                  <p className="text-sm text-gray-300 mb-2">
+                    Пилот: Запускаю автоматическую проверку
+                  </p>
+                  <Badge
+                    variant="outline"
+                    className="text-xs text-green-400 border-green-400"
+                  >
+                    ✅ Готово. Ошибка исправлена.
+                  </Badge>
+                </div>
+
+                <div className="bg-[#2D2D30] rounded-lg p-4">
+                  <p className="text-sm text-gray-300">Задать вопрос...</p>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex items-center space-x-2 text-sm">
+                    <Icon name="Users" size={14} className="text-purple-400" />
+                    <span className="text-gray-400">Staff Online</span>
+                  </div>
+
+                  <div className="flex items-center space-x-2 text-sm">
+                    <Icon name="User" size={14} className="text-purple-400" />
+                    <span className="text-gray-400">User online</span>
+                  </div>
+
+                  <div className="flex items-center space-x-2 text-sm">
+                    <Icon
+                      name="FileText"
+                      size={14}
+                      className="text-purple-400"
+                    />
+                    <span className="text-gray-400">Reports</span>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>
